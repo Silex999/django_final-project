@@ -5,3 +5,4 @@
 1. Сайт (структура, дизайн - https://bootstraptema.ru/stuff/templates_bootstrap/landing_page/credo/6-1-0-6746)
 2. Создать модели, вьюхи, апи, авторизацию, группы по правам доступа.
 3. Обернуть в докер и gitlab ci. 
+Название папки проекта - cybercafe
