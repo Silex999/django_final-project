@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Регистрация - CyberCafe{% endblock %}
+
+{% block content %}
+<section class="section-padding-top section-padding-bottom bg-white" style="padding-top:120px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <div class="service-card service-card-style-one position-relative">
+                    <img class="position-absolute top-0 end-0 service-shape"
+                         src="{% static 'assets/images/shapes/star-shape-250.png' %}" alt="">
+                    <h3 class="title mb-4"><span>Регистрация</span></h3>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-4">
+                            <label class="fw-semibold mb-2">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors }}</div>
+                            {% endif %}
+                            {% if field.help_text %}
+                            <div class="text-muted small mt-1">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary w-100">Создать аккаунт</button>
+                    </form>
+                    <p class="text-center mt-4">
+                        Уже есть аккаунт?
+                        <a href="{% url 'login' %}" class="text-primary fw-semibold">Войти</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

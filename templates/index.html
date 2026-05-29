@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}CyberCafe - Онлайн-бронирование компьютеров{% endblock %}
+
+{% block content %}
+
+<section class="hero-section bg-dark position-relative">
+    <div class="line-pattern-light">
+        <span class="position-absolute line-verticle line-left"></span>
+        <span class="position-absolute line-verticle line-two"></span>
+        <span class="position-absolute line-verticle line-three"></span>
+        <span class="position-absolute line-verticle line-four"></span>
+        <span class="position-absolute line-verticle line-right"></span>
+    </div>
+    <img class="position-absolute hero-shape-top top-0 shape-width-400"
+         src="{% static 'assets/images/shapes/star-top.png' %}" alt="">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 col-xl-12">
+                <h2 class="hero-title fw-medium text-white" data-aos="fade-right">
+                    <span>Забронируй</span>
+                    Лучший Игровой ПК
+                    Онлайн!
+                </h2>
+                <p data-aos="fade-right" data-aos-delay="300" class="hero-text text-white">
+                    Выбери компьютер, укажи время — и наслаждайся игрой без очередей.
+                    Стандартные, VIP и Про-геймерские зоны. Мгновенное подтверждение.
+                </p>
+                <div data-aos="fade-right" data-aos-delay="500">
+                    <a href="{% url 'computers_list' %}" class="btn btn-primary me-3">
+                        Забронировать ПК
+                        <span class="contact-btn-icon">
+                            <svg width="16" height="15" viewBox="0 0 16 15" fill="none">
+                                <path d="M3.90566 3.95808C3.88909 3.80893 4.02167 3.67634 4.1874 3.67634H11.1148C11.2806 3.67634 11.3966 3.79235 11.3966 3.95808V10.8855C11.3966 11.0512 11.264 11.1838 11.1148 11.1673L10.4685 11.1838C10.3028 11.1838 10.1702 11.0512 10.1868 10.9021L10.1702 5.74794L4.51885 11.3993C4.40284 11.5153 4.23712 11.5153 4.12111 11.3993L3.65707 10.9352C3.55763 10.8358 3.54106 10.6535 3.65707 10.5375L9.3084 4.88616H4.17083C4.02167 4.90273 3.88909 4.77015 3.88909 4.60442L3.90566 3.95808Z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-outline-light">
+                        Регистрация
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-us-one section-padding-bottom position-relative z-0">
+    <div class="container">
+        <div class="col-12">
+            <div class="fun-fact-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="row row-gap-6">
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <ul class="list-unstyled funfact-lists">
+                            <li class="d-flex flex-column">
+                                <span><img src="{% static 'assets/images/shapes/fact-arrow.png' %}" alt=""></span>
+                                <span class="fact-counter">
+                                    <span class="fact-counter-number">{{ total_computers }}</span>
+                                    <span>ПК</span>
+                                </span>
+                                <p class="fact-counter-text">Всего компьютеров</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <ul class="list-unstyled funfact-lists">
+                            <li class="d-flex flex-column">
+                                <span><img src="{% static 'assets/images/shapes/fact-arrow.png' %}" alt=""></span>
+                                <span class="fact-counter">
+                                    <span class="fact-counter-number">{{ available_computers }}</span>
+                                    <span>свободно</span>
+                                </span>
+                                <p class="fact-counter-text">Доступно сейчас</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <ul class="list-unstyled funfact-lists">
+                            <li class="d-flex flex-column">
+                                <span><img src="{% static 'assets/images/shapes/fact-arrow.png' %}" alt=""></span>
+                                <span class="fact-counter">
+                                    <span class="fact-counter-number">{{ total_bookings }}</span>
+                                    <span>+</span>
+                                </span>
+                                <p class="fact-counter-text">Сеансов сыграно</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="service-section section-padding-bottom section-padding-top bg-white position-relative z-1">
+    <div class="container">
+        <div class="row mb-6 pb-6" data-aos="fade-up">
+            <div class="col-12 col-xl-6">
+                <div class="sub-title d-flex align-items-center mb-8 mb-xl-0">
+                    <span>01</span> <span class="hr-span"></span> <span>Зоны</span>
+                </div>
+            </div>
+            <div class="col-12 col-xl-6">
+                <h3 class="title">Выбери свою <span>игровую зону</span></h3>
+            </div>
+        </div>
+        <div class="row g-6">
+            {% for zone in zones %}
+            <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'2' }}00">
+                <div class="service-card service-card-style-one position-relative">
+                    <img class="position-absolute top-0 end-0 service-shape"
+                         src="{% static 'assets/images/shapes/star-shape-250.png' %}" alt="">
+                    <h4 class="service-title text-dark fw-semibold">{{ zone.name }}</h4>
+                    <p class="service-text">
+                        {{ zone.get_zone_type_display }}<br>
+                        <strong>{{ zone.price_per_hour }} ₽/час</strong>
+                    </p>
+                    {% if zone.description %}
+                    <p class="service-text">{{ zone.description }}</p>
+                    {% endif %}
+                    <a class="service-link fw-semibold"
+                       href="{% url 'computers_list' %}?zone={{ zone.pk }}">
+                        <span class="service-link-read-more-text">Выбрать ПК</span>
+                        <span>
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                <path d="M4.79231 4.55465C4.77297 4.38064 4.92765 4.22596 5.121 4.22596H13.203C13.3964 4.22596 13.5317 4.3613 13.5317 4.55465V12.6367C13.5317 12.83 13.377 12.9847 13.203 12.9654L12.4489 12.9847C12.2556 12.9847 12.1009 12.83 12.1203 12.656L12.1009 6.64282L5.5077 13.236C5.37235 13.3714 5.179 13.3714 5.04366 13.236L4.50228 12.6947C4.38627 12.5787 4.36694 12.366 4.50228 12.2306L11.0955 5.63741H5.10166C4.92765 5.65674 4.77297 5.50206 4.77297 5.30871L4.79231 4.55465Z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">Зоны ещё не добавлены. Обратитесь к администратору.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="cta-section section-padding-bottom bg-white position-relative z-1">
+    <div class="container">
+        <div class="row" data-aos="zoom-in">
+            <div class="col-12 text-center">
+                <span class="cta-sub-title text-secondary fw-medium">Готов к игре?</span>
+                <h3 class="cta-title">Забронируй <span>прямо сейчас</span></h3>
+                <div class="d-flex cta-btn-group justify-content-center align-items-center">
+                    <a href="{% url 'computers_list' %}" class="btn btn-primary">
+                        Смотреть ПК
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-secondary-outline ms-3">
+                        Зарегистрироваться
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

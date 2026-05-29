@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Бронирование подтверждено!{% endblock %}
+
+{% block content %}
+<section class="section-padding-top section-padding-bottom bg-white text-center" style="padding-top:120px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-6">
+                <div class="service-card service-card-style-one position-relative">
+                    <img class="position-absolute top-0 end-0 service-shape"
+                         src="{% static 'assets/images/shapes/star-shape-250.png' %}" alt="">
+                    <div class="mb-4">
+                        <span style="font-size:4rem;">✔</span>
+                    </div>
+                    <h3 class="title">Бронь <span>создана!</span></h3>
+                    <div class="mt-4 text-start p-3 bg-light rounded">
+                        <p><strong>ПК №:</strong> {{ booking.computer.number }}</p>
+                        <p><strong>Зона:</strong> {{ booking.computer.zone.name }}</p>
+                        <p><strong>Начало:</strong> {{ booking.start_time|date:"d.m.Y H:i" }}</p>
+                        <p><strong>Конец:</strong> {{ booking.end_time|date:"d.m.Y H:i" }}</p>
+                        <p><strong>Длительность:</strong> {{ booking.duration_hours }} ч.</p>
+                        <p><strong>Стоимость:</strong> {{ booking.total_price }} ₽</p>
+                        <p><strong>Статус:</strong>
+                            <span class="badge bg-warning text-dark">{{ booking.get_status_display }}</span>
+                        </p>
+                    </div>
+                    <div class="d-flex gap-3 justify-content-center mt-4">
+                        <a href="{% url 'my_bookings' %}" class="btn btn-primary">
+                            Мои бронирования
+                        </a>
+                        <a href="{% url 'computers_list' %}" class="btn btn-secondary-outline">
+                            Ещё забронировать
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

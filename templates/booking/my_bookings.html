@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мои бронирования - CyberCafe{% endblock %}
+
+{% block content %}
+<section class="section-padding-top section-padding-bottom bg-white" style="padding-top:120px;">
+    <div class="container">
+        <div class="row mb-6" data-aos="fade-up">
+            <div class="col-12">
+                <h2 class="title">Мои <span>бронирования</span></h2>
+            </div>
+        </div>
+
+        {% if bookings %}
+        <div class="row g-4">
+            {% for booking in bookings %}
+            <div class="col-12" data-aos="fade-up">
+                <div class="experience-card position-relative">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 experience-card-list-item">
+                        <div>
+                            <h4 class="experience-title fw-semibold">
+                                ПК №{{ booking.computer.number }}
+                                <small class="text-muted fw-normal fs-6">— {{ booking.computer.zone.name }}</small>
+                            </h4>
+                            <p class="mb-1">
+                                {{ booking.start_time|date:"d.m.Y H:i" }} — {{ booking.end_time|date:"H:i" }}
+                                ({{ booking.duration_hours }} ч.)
+                            </p>
+                            <p class="mb-1"><strong>Стоимость:</strong> {{ booking.total_price }} ₽</p>
+                            {% if booking.comment %}
+                            <p class="mb-1 text-muted small">{{ booking.comment }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex flex-column align-items-end gap-2">
+                            <span class="badge
+                                {% if booking.status == 'pending' %}bg-warning text-dark
+                                {% elif booking.status == 'confirmed' %}bg-success
+                                {% elif booking.status == 'cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %} fs-6">
+                                {{ booking.get_status_display }}
+                            </span>
+                            {% if booking.status in 'pending,confirmed' and booking.start_time > now %}
+                            <form method="post" action="{% url 'booking_cancel' booking.pk %}"
+                                  onsubmit="return confirm('Отменить бронирование?')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Отменить
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12 text-center py-5">
+                <p class="text-muted fs-5">У вас пока нет бронирований.</p>
+                <a href="{% url 'computers_list' %}" class="btn btn-primary mt-3">
+                    Забронировать ПК
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const now = new Date();
+</script>
+{% endblock %}

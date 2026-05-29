@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Редактирование заявки #{{ booking.pk }}{% endblock %}
+
+{% block content %}
+<section class="section-padding-top section-padding-bottom bg-white" style="padding-top:120px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-6">
+                <div class="service-card service-card-style-one position-relative">
+                    <h3 class="title mb-4">Заявка <span>#{{ booking.pk }}</span></h3>
+
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <p><strong>Пользователь:</strong> {{ booking.user.username }}</p>
+                        <p><strong>ПК №{{ booking.computer.number }}</strong> — {{ booking.computer.zone.name }}</p>
+                        <p><strong>Период:</strong> {{ booking.start_time|date:"d.m.Y H:i" }} → {{ booking.end_time|date:"d.m.Y H:i" }}</p>
+                        <p><strong>Сумма:</strong> {{ booking.total_price }} ₽</p>
+                        {% if booking.comment %}
+                        <p><strong>Комментарий:</strong> {{ booking.comment }}</p>
+                        {% endif %}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="fw-semibold mb-2">Статус</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="mb-4">
+                            <label class="fw-semibold mb-2">Заметка менеджера</label>
+                            {{ form.manager_note }}
+                        </div>
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <a href="{% url 'manager_bookings' %}" class="btn btn-secondary-outline">Назад</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

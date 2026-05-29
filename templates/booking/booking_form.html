@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Бронирование ПК №{{ computer.number }}{% endblock %}
+
+{% block content %}
+<section class="section-padding-top section-padding-bottom bg-white" style="padding-top:120px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-7">
+                <div class="service-card service-card-style-one position-relative">
+                    <img class="position-absolute top-0 end-0 service-shape"
+                         src="{% static 'assets/images/shapes/star-shape-250.png' %}" alt="">
+
+                    <h3 class="title mb-4">
+                        Бронирование <span>ПК №{{ computer.number }}</span>
+                    </h3>
+
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <strong>Зона:</strong> {{ computer.zone.name }}<br>
+                        <strong>Тип:</strong> {{ computer.zone.get_zone_type_display }}<br>
+                        <strong>Цена:</strong> {{ computer.zone.price_per_hour }} ₽/час
+                        {% if computer.cpu %}
+                        <br><strong>CPU:</strong> {{ computer.cpu }}
+                        <br><strong>GPU:</strong> {{ computer.gpu }}
+                        {% endif %}
+                    </div>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                            <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label class="fw-semibold mb-2">{{ form.start_time.label }}</label>
+                            {{ form.start_time }}
+                            {% if form.start_time.errors %}
+                            <div class="text-danger small mt-1">{{ form.start_time.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-semibold mb-2">{{ form.end_time.label }}</label>
+                            {{ form.end_time }}
+                            {% if form.end_time.errors %}
+                            <div class="text-danger small mt-1">{{ form.end_time.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-semibold mb-2">{{ form.comment.label }}</label>
+                            {{ form.comment }}
+                        </div>
+
+                        <div class="alert alert-info" id="price-preview" style="display:none;">
+                            <strong>Предварительная стоимость:</strong>
+                            <span id="price-value"></span> ₽
+                            (<span id="duration-value"></span> ч.)
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary">
+                                Подтвердить бронь
+                                <span class="contact-btn-icon">
+                                    <svg width="16" height="15" viewBox="0 0 16 15" fill="none">
+                                        <path d="M3.90566 3.95808C3.88909 3.80893 4.02167 3.67634 4.1874 3.67634H11.1148C11.2806 3.67634 11.3966 3.79235 11.3966 3.95808V10.8855C11.3966 11.0512 11.264 11.1838 11.1148 11.1673L10.4685 11.1838C10.3028 11.1838 10.1702 11.0512 10.1868 10.9021L10.1702 5.74794L4.51885 11.3993C4.40284 11.5153 4.23712 11.5153 4.12111 11.3993L3.65707 10.9352C3.55763 10.8358 3.54106 10.6535 3.65707 10.5375L9.3084 4.88616H4.17083C4.02167 4.90273 3.88909 4.77015 3.88909 4.60442L3.90566 3.95808Z" fill="currentColor"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <a href="{% url 'computers_list' %}" class="btn btn-secondary-outline">
+                                Назад
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const pricePerHour = {{ computer.zone.price_per_hour }};
+
+    function updatePrice() {
+        const start = document.querySelector('input[name="start_time"]').value;
+        const end = document.querySelector('input[name="end_time"]').value;
+        if (start && end) {
+            const startD = new Date(start);
+            const endD = new Date(end);
+            const hours = (endD - startD) / 3600000;
+            if (hours > 0) {
+                const price = (hours * pricePerHour).toFixed(2);
+                document.getElementById('price-preview').style.display = 'block';
+                document.getElementById('price-value').textContent = price;
+                document.getElementById('duration-value').textContent = hours.toFixed(1);
+            } else {
+                document.getElementById('price-preview').style.display = 'none';
+            }
+        }
+}
+
+document.querySelectorAll('input[type="datetime-local"]').forEach(el => {
+    el.addEventListener('change', updatePrice);
+});
+</script>
+{% endblock %}

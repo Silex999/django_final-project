@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>{% block title %}CyberCafe — Бронирование ПК{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/images/favicon.png' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/pages/home.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="container-fluid">
+    <header id="sticky-header" class="header position-absolute w-100 z-3">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="flex-shrink-1">
+                <a href="{% url 'index' %}" class="brand-logo">
+                    <img src="{% static 'assets/images/logo/logo.png' %}" alt="CyberCafe">
+                </a>
+            </div>
+            <div class="d-none d-xl-flex flex-grow-1 justify-content-center">
+                <nav class="main-nav">
+                    <ul class="main-menu text-capitalize d-flex flex-wrap align-items-center list-unstyled p-0 m-0">
+                        <li class="main-menu-list-item">
+                            <a href="{% url 'index' %}" class="main-menu-link {% if request.resolver_match.url_name == 'index' %}main-menu-active-link{% endif %}">Главная</a>
+                        </li>
+                        <li class="main-menu-list-item">
+                            <a href="{% url 'computers_list' %}" class="main-menu-link {% if request.resolver_match.url_name == 'computers_list' %}main-menu-active-link{% endif %}">Компьютеры</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li class="main-menu-list-item">
+                            <a href="{% url 'my_bookings' %}" class="main-menu-link">Мои брони</a>
+                        </li>
+                        {% if user.is_staff or user.groups.all|length > 0 %}
+                        <li class="main-menu-list-item">
+                            <a href="{% url 'manager_bookings' %}" class="main-menu-link">Заявки</a>
+                        </li>
+                        {% endif %}
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            <div class="flex-shrink-1">
+                <div class="d-flex flex-wrap align-items-center justify-content-end contact-btn-wrap">
+                    {% if user.is_authenticated %}
+                        <span class="text-white me-3 d-none d-sm-inline">{{ user.username }}</span>
+                        <a href="{% url 'logout' %}" class="btn btn-primary contact-btn d-none d-sm-inline-block">
+                            Выйти
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary contact-btn d-none d-sm-inline-block">
+                            Войти
+                        </a>
+                    {% endif %}
+                    <button class="border-0 menu-toggle-btn" id="offcanvas-toggle"
+                            data-bs-toggle="offcanvas" data-bs-target="#offcanvas">
+                        <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M0 0H20V2H0V0ZM5 7H20V9H5V7ZM20 14H0V16H20V14Z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+{% if messages %}
+<div style="position:fixed;top:80px;right:20px;z-index:9999;min-width:300px;">
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer class="bg-dark">
+    <div class="overflow-hidden">
+        <div data-aos="zoom-in">
+            <div class="footer position-relative z-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <a href="{% url 'index' %}">
+                                <img src="{% static 'assets/images/logo/logo.png' %}" alt="CyberCafe">
+                            </a>
+                            <p class="text-white mt-4">
+                                Лучший компьютерный клуб города. Бронируй ПК онлайн!
+                            </p>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="footer-widget">
+                                <div class="footer-widget-list">
+                                    <div class="footer-widget-list-item">
+                                        <p>Навигация</p>
+                                        <ul class="list-unstyled">
+                                            <li><a class="text-white footer-widget-link" href="{% url 'index' %}">Главная</a></li>
+                                            <li><a class="text-white footer-widget-link" href="{% url 'computers_list' %}">Компьютеры</a></li>
+                                            {% if user.is_authenticated %}
+                                            <li><a class="text-white footer-widget-link" href="{% url 'my_bookings' %}">Мои бронирования</a></li>
+                                            {% else %}
+                                            <li><a class="text-white footer-widget-link" href="{% url 'register' %}">Регистрация</a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="footer-widget">
+                                <div class="footer-widget-list">
+                                    <div class="footer-widget-list-item">
+                                        <p>Контакты</p>
+                                        <h3 class="footer-title">ул. Киберспортивная, 42</h3>
+                                    </div>
+                                    <div class="footer-widget-list-item">
+                                        <a class="text-white footer-widget-link" href="mailto:info@cybercafe.ru">info@cybercafe.ru</a>
+                                        <a class="text-white footer-widget-link" href="tel:+78001234567">+7 (800) 123-45-67</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="coppyright">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <p>© 2024 <a class="text-primary" href="#">CyberCafe</a> — Все права защищены.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="{% static 'assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'assets/js/vendor/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/aos.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

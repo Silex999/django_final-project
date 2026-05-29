@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Компьютеры - CyberCafe{% endblock %}
+
+{% block content %}
+<section class="service-section section-padding-top section-padding-bottom bg-white position-relative z-1" style="padding-top:120px;">
+    <div class="container">
+        <div class="row mb-6 pb-4" data-aos="fade-up">
+            <div class="col-12">
+                <h2 class="title">Выберите <span>компьютер</span></h2>
+            </div>
+        </div>
+
+        <div class="row mb-6" data-aos="fade-up">
+            <div class="col-12">
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'computers_list' %}"
+                       class="btn {% if not selected_zone %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                        Все зоны
+                    </a>
+                    {% for zone in zones %}
+                    <a href="?zone={{ zone.pk }}"
+                       class="btn {% if selected_zone == zone.pk|stringformat:'s' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                        {{ zone.name }} — {{ zone.price_per_hour }} ₽/ч
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-6">
+            {% for computer in computers %}
+            <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'1' }}00">
+                <div class="service-card service-card-style-one position-relative">
+                    <img class="position-absolute top-0 end-0 service-shape"
+                         src="{% static 'assets/images/shapes/star-shape-250.png' %}" alt="">
+
+                    {% if computer.image %}
+                    <img src="{{ computer.image.url }}" alt="ПК №{{ computer.number }}"
+                         class="img-fluid rounded mb-3" style="max-height:180px;object-fit:cover;width:100%;">
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h4 class="service-title text-dark fw-semibold mb-0">
+                            ПК №{{ computer.number }}
+                        </h4>
+                        <span class="badge
+                            {% if computer.status == 'available' %}bg-success
+                            {% elif computer.status == 'booked' %}bg-warning text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ computer.get_status_display }}
+                        </span>
+                    </div>
+
+                    <p class="service-text mb-1">
+                        <strong>Зона:</strong> {{ computer.zone.name }}<br>
+                        <strong>Цена:</strong> {{ computer.zone.price_per_hour }} ₽/ч
+                    </p>
+                    {% if computer.cpu %}
+                    <p class="service-text mb-1">
+                        <small>
+                            CPU: {{ computer.cpu }}<br>
+                            GPU: {{ computer.gpu }}<br>
+                            RAM: {{ computer.ram }}<br>
+                            Монитор: {{ computer.monitor }}
+                        </small>
+                    </p>
+                    {% endif %}
+
+                    {% if computer.status == 'available' %}
+                        {% if user.is_authenticated %}
+                        <a class="service-link fw-semibold"
+                           href="{% url 'booking_create' computer.pk %}">
+                            <span class="service-link-read-more-text">Забронировать</span>
+                            <span>
+                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                    <path d="M4.79231 4.55465C4.77297 4.38064 4.92765 4.22596 5.121 4.22596H13.203C13.3964 4.22596 13.5317 4.3613 13.5317 4.55465V12.6367C13.5317 12.83 13.377 12.9847 13.203 12.9654L12.4489 12.9847C12.2556 12.9847 12.1009 12.83 12.1203 12.656L12.1009 6.64282L5.5077 13.236C5.37235 13.3714 5.179 13.3714 5.04366 13.236L4.50228 12.6947C4.38627 12.5787 4.36694 12.366 4.50228 12.2306L11.0955 5.63741H5.10166C4.92765 5.65674 4.77297 5.50206 4.77297 5.30871L4.79231 4.55465Z" fill="currentColor"/>
+                                </svg>
+                            </span>
+                        </a>
+                        {% else %}
+                        <a class="service-link fw-semibold" href="{% url 'login' %}?next={% url 'booking_create' computer.pk %}">
+                            <span class="service-link-read-more-text">Войти для брони</span>
+                        </a>
+                        {% endif %}
+                    {% else %}
+                    <span class="service-link fw-semibold text-muted">Недоступен</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">Компьютеры не найдены.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
